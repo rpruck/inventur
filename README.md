@@ -1,6 +1,9 @@
 # inventur
 
-Finds what eats your disk: the largest files, large folders, and known clutter like `node_modules`, venvs, ML checkpoints, model caches, build outputs, logs, VM images and app caches. It also shows how long ago things were touched, so forgotten stuff stands out.
+I recently found a 54 GB pgAdmin log file which my Mac's storage settings page did not show because it was hiding as a "System File".
+Apart from files like these, I have several GBs of node modules and PyTorch checkpoints lying around which also don't get picked up by the storage settings.
+As am writing this I have about 6 GB of storage left and I don't even store photos on my Mac.
+In German we call stocktaking "Inventur machen", so here is `inventur` which should find your clutter and help you get rid of it.
 
 **Read-only by design.** inventur never deletes or modifies anything. It reveals items in Finder, and you decide what to delete there. `safety_test.go` enforces this: it fails the build if any non-test code calls a mutating filesystem function.
 
