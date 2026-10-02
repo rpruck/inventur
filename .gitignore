@@ -1,0 +1,8 @@
+# Build output
+/inventur
+
+# Claude Code instructions are local only
+CLAUDE.md
+
+# IDE
+.idea/
