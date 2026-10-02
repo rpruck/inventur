@@ -41,6 +41,11 @@ func TestDir(t *testing.T) {
 		{home + "/Library/Application Support/MobileSync/Backup", nil, IOSBackups},
 		{home + "/Library/Containers/com.docker.docker", nil, VMs},
 		{home + "/.Trash", nil, Trash},
+		{"/Library/Caches/com.apple.iconservices.store", nil, AppCaches},
+		{"/Library/Caches", nil, nil},
+		{"/private/var/folders", nil, System},
+		{"/private/var/vm", nil, System},
+		{"/System/Volumes/VM", nil, System},
 		{"/x/plain", nil, nil},
 	}
 	for _, tt := range tests {

@@ -38,6 +38,7 @@ var (
 	IOSBackups  = &Category{"iosbackup", "iOS device backups", "Manage in Finder › device › Manage Backups"}
 	AppCaches   = &Category{"appcache", "App caches", "Usually safe; quit the app first, it recreates them"}
 	AppData     = &Category{"appdata", "App data", "Review: leftovers of uninstalled apps are common"}
+	System      = &Category{"system", "macOS system files", "Managed by macOS: don't delete by hand; a restart frees temp files and swap"}
 	Git         = &Category{"git", "Git repositories (.git)", "Informational: try git gc, check LFS objects"}
 )
 
@@ -45,7 +46,7 @@ var (
 var All = []*Category{
 	NodeModules, PyEnvs, DevCaches, Build, ML, MLCaches, Data, PkgCaches,
 	Xcode, VMs, Logs, Dumps, Installers, Archives, Videos, Trash,
-	IOSBackups, AppCaches, AppData, Git,
+	IOSBackups, AppCaches, AppData, System, Git,
 }
 
 // dirNames match a directory by its exact name, anywhere.
@@ -187,6 +188,10 @@ var absPaths = map[string]*Category{
 	"/cores":           Dumps,
 	"/Library/Logs":    Logs,
 	"/private/var/log": Logs,
+
+	"/private/var/folders": System,
+	"/private/var/vm":      System,
+	"/System/Volumes/VM":   System,
 }
 
 // homeChildrenOf makes every immediate child of these directories its own
@@ -197,6 +202,11 @@ var homeChildrenOf = map[string]*Category{
 	"Library/Application Support": AppData,
 	"Library/Containers":          AppData,
 	"Library/Group Containers":    AppData,
+}
+
+// absChildrenOf is homeChildrenOf for absolute directories.
+var absChildrenOf = map[string]*Category{
+	"/Library/Caches": AppCaches,
 }
 
 // fileNames, filePatterns and fileExts categorize individual files.
@@ -270,6 +280,9 @@ func NewClassifier(home string) *Classifier {
 	}
 	for p, cat := range absPaths {
 		add(p, cat)
+	}
+	for p, cat := range absChildrenOf {
+		c.childrenOf[p] = cat
 	}
 	for _, env := range []string{"HF_HOME", "TORCH_HOME", "OLLAMA_MODELS"} {
 		if v := os.Getenv(env); filepath.IsAbs(v) {

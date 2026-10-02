@@ -13,6 +13,7 @@ In German we call stocktaking "Inventur machen", so here is `inventur` which sho
 go build -o inventur .
 ./inventur                # scan your home folder in the interactive TUI
 ./inventur ~/Documents    # scan a specific folder
+./inventur /              # whole startup disk, incl. system caches and temp files
 ./inventur --report ~     # plain-text report (also used automatically when piped)
 ./inventur --json ~ > scan.json
 ```
@@ -44,7 +45,7 @@ go build -o inventur .
 - `--min-file 1GB`: only list really big files.
 - `--stale 1y`: highlight items untouched for a year (default 180d).
 - `--exclude PATTERN`: skip paths (glob on name or path, or a path prefix). Repeatable.
-- `--cross-mounts`: also descend into other mounted volumes.
+- `--cross-mounts`: also descend into other mounted volumes (e.g. the swap volume `/System/Volumes/VM`).
 
 ## Notes
 
@@ -63,6 +64,8 @@ All rules live in [`internal/category/rules.go`](internal/category/rules.go):
 | `contentMarkers` | a file inside the folder (e.g. `pyvenv.cfg`) |
 | `homePaths` | exact paths under `~` |
 | `homeChildrenOf` | each child of a folder counted as its own item (e.g. `~/Library/Caches/*`) |
+| `absPaths` | exact absolute paths (e.g. `/private/var/vm`) |
+| `absChildrenOf` | each child of an absolute folder (e.g. `/Library/Caches/*`) |
 | `fileNames`, `filePatterns`, `fileExts` | individual files |
 
 The outermost match wins, so a `__pycache__` inside a venv counts toward the venv.
